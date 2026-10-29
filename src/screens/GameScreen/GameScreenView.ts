@@ -7,7 +7,7 @@ import { STAGE_WIDTH, STAGE_HEIGHT } from "../../constants.ts";
  */
 export class GameScreenView implements View {
 	private group: Konva.Group;
-	private lemonImage: Konva.Image | Konva.Circle | null = null;
+	private lemonImage: Konva.Image | null = null;
 	private scoreText: Konva.Text;
 	private timerText: Konva.Text;
 
@@ -46,21 +46,25 @@ export class GameScreenView implements View {
 		});
 		this.group.add(this.timerText);
 
-		// TODO: Task 2 - Load and display lemon image using Konva.Image.fromURL()
-		// Placeholder circle (remove this when implementing the image)
-		const placeholder = new Konva.Circle({
-			x: STAGE_WIDTH / 2,
-			y: STAGE_HEIGHT / 2,
-			radius: 50,
-			fill: "yellow",
-			stroke: "orange",
-			strokeWidth: 3,
-		})
-			.width(100)
-			.height(100);
-		placeholder.on("click", onLemonClick);
-		this.lemonImage = placeholder;
-		this.group.add(this.lemonImage);
+		Konva.Image.fromURL(
+			"/lemon.png",
+			(image) => {
+				const size = 180;
+				image.width(size);
+				image.height(size);
+				image.x(STAGE_WIDTH / 2);
+				image.y(STAGE_HEIGHT / 2);
+				image.offsetX(size / 2);
+				image.offsetY(size / 2);
+				image.on("click", onLemonClick);
+				this.lemonImage = image;
+				this.group.add(image);
+				this.group.getLayer()?.draw();
+			},
+			() => {
+				console.error("Failed to load /lemon.png");
+			},
+		);
 	}
 
 	/**
